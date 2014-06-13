@@ -8,7 +8,7 @@ import did.*;
  * Questa classe gestisce le richieste HTTP
  * 
  */
-public class main extends HttpServlet {
+public class Main extends HttpServlet {
 
     /**
      * Questo metodo risponde alle richieste HTTP di tipo GET. Elabora le richieste, impostando
@@ -35,7 +35,7 @@ public class main extends HttpServlet {
 			DBMS dbms = new DBMS();
 			if (ps.equals("")) {
 				// Parametro ps assente o vuoto, visualizzo la home page del sito.
-				Vector tipi = dbms.getTipiAttivita();
+				Vector<TipoAttBean> tipi = dbms.getTipiAttivita();
 				request.setAttribute("tipi", tipi);
 				//Preparo il Dispatcher
 				rd = request.getRequestDispatcher("index.jsp");

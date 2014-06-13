@@ -46,12 +46,12 @@ public class DBMS {
 
 
 	//Metodo per il recupero delle informazioni del corso di studi con l'id specificato
-	public Vector getTipiAttivita() {
+	public Vector<TipoAttBean> getTipiAttivita() {
 		// Dichiarazione delle variabili necessarie
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		Vector result = new Vector();	
+		Vector<TipoAttBean> result = new Vector<TipoAttBean>();	
 		try {
 			// Tentativo di connessione al database
 			con = DriverManager.getConnection(url, user, passwd);
