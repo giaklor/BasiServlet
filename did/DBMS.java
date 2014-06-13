@@ -13,7 +13,8 @@ public class DBMS {
     private String user = "userlab14";
     private String passwd = "quattordiciX8";
 	
-    /** URL per la connessione alla base di dati e' formato dai seguenti componenti:
+    /** 
+     * URL per la connessione alla base di dati e' formato dai seguenti componenti:
      * <protocollo>://<host del server>/<nome base di dati>.
      */
     private String url = "jdbc:postgresql://dbserver.sci.univr.it/did2014";
@@ -21,9 +22,8 @@ public class DBMS {
 	/** Driver da utilizzare per la connessione e l'esecuzione delle query. */
     private String driver = "org.postgresql.Driver";
 
-	//definizione delle Query 
-	//Recupera le denominazioni dei tipi dei corsi offerti
-	private String tipiq = "SELECT Denominazione FROM Tipo ORDER BY Denominazione";
+	/** Recupera le denominazioni dei tipi dei corsi offerti */
+	private static final String tipiq = "SELECT Denominazione FROM Tipo ORDER BY Denominazione";
 
 	
     /**
@@ -37,27 +37,36 @@ public class DBMS {
 		Class.forName(driver);
     }
 
-	//Metodi per la creazione di un bean a partire dal record attuale del ResultSet dato come parametro
-	private TipoAttBean makeTipoAttBean(ResultSet rs) throws SQLException {
-      TipoAttBean bean = new TipoAttBean();
-      bean.setDenominazione(rs.getString("denominazione"));
-      return bean;
+    /**
+     * Restituisce un <tt>TipoAttBean</tt> contenente le informazioni specificate.
+     * @param rs il <tt>ResultSet</tt> contenente le informazioni estratte dal DB
+     * @return Il bean creato.
+     * @throws SQLException in caso i campi richiesti non siano presenti nel <tt>ResultSet</tt> passato
+     */
+    private TipoAttBean makeTipoAttBean(ResultSet rs) throws SQLException {
+    	TipoAttBean bean = new TipoAttBean();
+    	bean.setDenominazione(rs.getString("denominazione"));
+    	return bean;
     }	
 
-
-	//Metodo per il recupero delle informazioni del corso di studi con l'id specificato
+	/**
+	 * Restituisce i tipi di attivita' offerti.
+	 * @return Il vettore dei tipi
+	 * @see TipoAttBean
+	 */
 	public Vector<TipoAttBean> getTipiAttivita() {
-		// Dichiarazione delle variabili necessarie
+
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		Vector<TipoAttBean> result = new Vector<TipoAttBean>();	
+		Vector<TipoAttBean> result = new Vector<TipoAttBean>();
+		
 		try {
 			// Tentativo di connessione al database
 			con = DriverManager.getConnection(url, user, passwd);
 			// Connessione riuscita, ottengo l'oggetto per l'esecuzione dell'interrogazione.
 			pstmt = con.prepareStatement(tipiq); 
-			//Eseguo la query
+			// Eseguo la query
 			rs=pstmt.executeQuery(); 
 			// Memorizzo il risultato dell'interrogazione in Vector di Bean
 			while(rs.next())
