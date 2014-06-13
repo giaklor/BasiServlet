@@ -1,0 +1,17 @@
+package did;
+
+public class TipoAttBean {
+   private String denominazione;
+   
+   public TipoAttBean(String den) {
+      denominazione = den;
+   }
+   
+   public void setNomeDirettore(String nome) {
+      nomeDirettore = nome;
+   }
+   
+   public String getNomeDirettore() {
+      return nomeDirettore;
+   }
+}

@@ -1,0 +1,338 @@
+/**        DBMS.java        */
+package did;
+
+import java.sql.*;
+import java.util.*;
+/**
+ * Questa classe mette a disposizione i metodi per effettuare interrogazioni
+ * sulla base di dati.
+ */
+public class DBMS {
+
+	//Dati di identificazione dell'utente (da personalizzare)
+    private String user = "userlab14";
+    private String passwd = "quattordiciX8";
+	
+    /** URL per la connessione alla base di dati e' formato dai seguenti componenti:
+     * <protocollo>://<host del server>/<nome base di dati>.
+     */
+    private String url = "jdbc:postgresql://dbserver.sci.univr.it/did2014";
+  
+	/** Driver da utilizzare per la connessione e l'esecuzione delle query. */
+    private String driver = "org.postgresql.Driver";
+
+	//definizione delle Query 
+	//Recupera le denominazioni dei tipi dei corsi offerti
+	private String tipiq = "SELECT Denominazione FROM Tipo ORDER BY Denominazione";
+
+	
+    /**
+     * Costruttore della classe. Carica i driver da utilizzare per la
+     * connessione alla base di dati.
+     *
+     * @throws ClassNotFoundException Eccezione generata nel caso in cui
+     *         i driver per la connessione non siano trovati nel CLASSPATH.
+     */
+    public DBMS() throws ClassNotFoundException {
+		Class.forName(driver);
+    }
+
+	//Metodi per la creazione di un bean a partire dal record attuale del ResultSet dato come parametro
+	private TipoAttBean makeTipoAttBean(ResultSet rs) throws SQLException {
+      TipoAttBean bean = new TipoAttBean();
+      bean.setDenominazione(rs.getString("denominazione"));
+      return bean;
+    }	
+
+
+	private CorsoStudiBean makeCorsoStudiBean(ResultSet rs) throws SQLException {
+      CorsoStudiBean bean = makeCSBean(rs);
+		bean.setAbbreviazione(rs.getString("Abbreviazione"));
+		bean.setDurataanni(rs.getInt("Durataanni"));
+		bean.setSede(rs.getString("Sede"));
+		bean.setInformativa(rs.getString("Informativa"));
+		return bean;
+    }
+
+	private CorsoStudiBean makeCSBean(ResultSet rs) throws SQLException {
+		CorsoStudiBean bean = new CorsoStudiBean();
+		bean.setId(rs.getInt("id"));
+		bean.setNomeCorsoStudi(rs.getString("Nome"));
+		bean.setCodice(rs.getString("Codice"));
+		return bean;
+    }
+    
+   private CorsoStudiBean makeCorsiDipBean(ResultSet rs) throws SQLException {
+      CorsoStudiBean bean = makeCSBean(rs);
+      bean.setDurataanni(rs.getInt("Durataanni"));
+		bean.setSede(rs.getString("Sede"));
+		bean.setInformativa(rs.getString("Informativa"));
+		bean.setTipo(rs.getInt("id_tipocs"));
+		bean.setNumeroInsegnamenti(rs.getInt("numins"));
+		bean.setTotaleCrediti(rs.getInt("totcrediti"));
+		return bean;
+   }    
+    
+    
+    private InsErogatoBean makeInsErogatoBean(ResultSet rs) throws SQLException {
+      InsErogatoBean bean = new InsErogatoBean();
+      bean.setId(rs.getInt("id"));
+      bean.setNomeIns(rs.getString("nomeins"));
+      bean.setCodiceIns(rs.getString("codiceins"));
+      bean.setAnnoAccademico(rs.getString("annoaccademico"));
+      bean.setNomeModulo(rs.getString("nomemodulo"));
+      bean.setDiscriminanteModulo(rs.getString("discriminantemodulo"));
+      bean.setModulo(rs.getInt("modulo"));
+      bean.setNomeUnita(rs.getString("nomeunita"));
+      bean.setCrediti(rs.getInt("crediti"));
+      bean.setHaModuli(rs.getString("hamoduli"));
+      bean.setHaUnita(rs.getString("haunita"));
+      bean.setMutuato(rs.getString("mutuato"));
+      bean.setDescrizioneDiscriminante(rs.getString("descrizione"));
+      return bean;
+    }
+    
+
+	//Metodo per il recupero delle informazioni del corso di studi con l'id specificato
+	public Vector getTipiAttivita() {
+		// Dichiarazione delle variabili necessarie
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Vector result = new Vector();	
+		try {
+			// Tentativo di connessione al database
+			con = DriverManager.getConnection(url, user, passwd);
+			// Connessione riuscita, ottengo l'oggetto per l'esecuzione dell'interrogazione.
+			pstmt = con.prepareStatement(tipiq); 
+			//Eseguo la query
+			rs=pstmt.executeQuery(); 
+			// Memorizzo il risultato dell'interrogazione in Vector di Bean
+			while(rs.next())
+				result.add(makeTipoAttBean(rs));
+		} catch(SQLException sqle) {                /* Catturo le eventuali eccezioni! */
+			sqle.printStackTrace();
+		} finally {                                 /* Alla fine chiudo la connessione. */
+			try {
+				con.close();
+			} catch(SQLException sqle1) {
+				sqle1.printStackTrace();
+			}
+		}
+		return result;
+    }
+	
+	//Metodo per il recupero delle principali informazioni di tutti i corsi di studi
+	public Vector getCorsiStudi() {
+		// Dichiarazione delle variabili
+		Connection con = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		Vector result = new Vector();
+		try {
+			// Tentativo di connessione al database
+			con = DriverManager.getConnection(url, user, passwd);
+			// Connessione riuscita, ottengo l'oggetto per l'esecuzione dell'interrogazione.
+			stmt = con.createStatement();
+			// Eseguo l'interrogazione desiderata
+			rs = stmt.executeQuery(css);
+			// Memorizzo il risultato dell'interrogazione nel Vector
+			while(rs.next())
+				result.add(makeCSBean(rs));
+		} catch(SQLException sqle) {                /* Catturo le eventuali eccezioni! */
+			sqle.printStackTrace();
+		} finally {                                 /* Alla fine chiudo la connessione. */
+			try {
+				con.close();
+			} catch(SQLException sqle1) {
+				sqle1.printStackTrace();
+			}
+		}
+		return result;
+    }
+	
+	//Metodo per il recupero della/e facoltà di appartenenza del corso di studi con l'id specificato
+	public Vector getDipartimentiCorso(int id) {
+		// Dichiarazione delle variabili
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Vector result = new Vector();
+		try {
+			// Tentativo di connessione al database
+			con = DriverManager.getConnection(url, user, passwd);
+			// Connessione riuscita, ottengo l'oggetto per l'esecuzione
+			// dell'interrogazione.
+			pstmt = con.prepareStatement(csf); 
+			pstmt.clearParameters();
+			pstmt.setInt(1, id); 
+			rs=pstmt.executeQuery(); 		
+			
+			// Memorizzo il risultato dell'interrogazione nel Bean
+			while(rs.next())
+				result.add(rs.getString("Nome"));
+		} catch(SQLException sqle) {                /* Catturo le eventuali eccezioni! */
+			sqle.printStackTrace();
+		} finally {                                 /* Alla fine chiudo la connessione. */
+			try {
+				con.close();
+			} catch(SQLException sqle1) {
+				sqle1.printStackTrace();
+			}
+		}
+		return result;
+	}
+	
+	public Vector getInsegnamentiErogati(int idCorso, String aa) {
+	   Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Vector result = new Vector();
+		try {
+			// Tentativo di connessione al database
+			con = DriverManager.getConnection(url, user, passwd);
+			// Connessione riuscita, ottengo l'oggetto per l'esecuzione
+			// dell'interrogazione.
+			pstmt = con.prepareStatement(iecs); 
+			pstmt.clearParameters();
+			pstmt.setString(1, aa);
+			pstmt.setInt(2, idCorso); 
+			rs=pstmt.executeQuery(); 		
+			
+			// Memorizzo il risultato dell'interrogazione nel Bean
+			while(rs.next())
+				result.add(makeInsErogatoBean(rs));
+		} catch(SQLException sqle) {                /* Catturo le eventuali eccezioni! */
+			sqle.printStackTrace();
+		} finally {                                 /* Alla fine chiudo la connessione. */
+			try {
+				con.close();
+			} catch(SQLException sqle1) {
+				sqle1.printStackTrace();
+			}
+		}
+		return result;
+	}
+   
+   public Vector getAAErogazioni(int idCorso) {
+		// Dichiarazione delle variabili necessarie
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Vector result = new Vector();	
+		try {
+			// Tentativo di connessione al database
+			con = DriverManager.getConnection(url, user, passwd);
+			// Connessione riuscita, ottengo l'oggetto per l'esecuzione dell'interrogazione.
+			pstmt = con.prepareStatement(aacs); 
+			pstmt.clearParameters();
+			//Imposto i parametri della query
+			pstmt.setInt(1, idCorso); 
+			//Eseguo la query
+			rs=pstmt.executeQuery(); 
+			// Memorizzo il risultato dell'interrogazione in Vector di Bean
+			while(rs.next())
+				result.add(rs.getString("annoaccademico"));
+		} catch(SQLException sqle) {                /* Catturo le eventuali eccezioni! */
+			sqle.printStackTrace();
+		} finally {                                 /* Alla fine chiudo la connessione. */
+			try {
+				con.close();
+			} catch(SQLException sqle1) {
+				sqle1.printStackTrace();
+			}
+		}
+		return result;
+    }
+    
+    public String getNomeDip(int id) {
+      Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String nome = "";
+		try {
+			// Tentativo di connessione al database
+			con = DriverManager.getConnection(url, user, passwd);
+			// Connessione riuscita, ottengo l'oggetto per l'esecuzione dell'interrogazione.
+			pstmt = con.prepareStatement(ndip); 
+			pstmt.clearParameters();
+			//Imposto i parametri della query
+			pstmt.setInt(1, id); 
+			//Eseguo la query
+			rs=pstmt.executeQuery(); 
+			if (rs.next())
+			   nome=rs.getString("nome");		
+		} catch(SQLException sqle) {                /* Catturo le eventuali eccezioni! */
+			sqle.printStackTrace();
+		} finally {                                 /* Alla fine chiudo la connessione. */
+			try {
+				con.close();
+			} catch(SQLException sqle1) {
+				sqle1.printStackTrace();
+			}
+		}
+		return nome;
+    }
+    
+    public Vector getCorsiDip(int idDip) {
+		// Dichiarazione delle variabili necessarie
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Vector result = new Vector();	
+		try {
+			// Tentativo di connessione al database
+			con = DriverManager.getConnection(url, user, passwd);
+			// Connessione riuscita, ottengo l'oggetto per l'esecuzione dell'interrogazione.
+			pstmt = con.prepareStatement(csdip); 
+			pstmt.clearParameters();
+			//Imposto i parametri della query
+			pstmt.setInt(1, idDip); 
+			//Eseguo la query
+			rs=pstmt.executeQuery(); 
+			// Memorizzo il risultato dell'interrogazione in Vector di Bean
+			while(rs.next())
+				result.add(makeCorsiDipBean(rs));
+		} catch(SQLException sqle) {                /* Catturo le eventuali eccezioni! */
+			sqle.printStackTrace();
+		} finally {                                 /* Alla fine chiudo la connessione. */
+			try {
+				con.close();
+			} catch(SQLException sqle1) {
+				sqle1.printStackTrace();
+			}
+		}
+		return result;
+    }
+    
+    public InfoDipBean getInfoDip(int idDip) {
+		// Dichiarazione delle variabili necessarie
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;	
+		InfoDipBean result = null;
+		try {
+			// Tentativo di connessione al database
+			con = DriverManager.getConnection(url, user, passwd);
+			// Connessione riuscita, ottengo l'oggetto per l'esecuzione dell'interrogazione.
+			pstmt = con.prepareStatement(dirdip); 
+			pstmt.clearParameters();
+			//Imposto i parametri della query
+			pstmt.setInt(1, idDip); 
+			//Eseguo la query
+			rs=pstmt.executeQuery(); 
+			// Memorizzo il risultato dell'interrogazione in un Bean
+			if(rs.next())
+				result = makeInfoDipBean(rs);
+		} catch(SQLException sqle) {                /* Catturo le eventuali eccezioni! */
+			sqle.printStackTrace();
+		} finally {                                 /* Alla fine chiudo la connessione. */
+			try {
+				con.close();
+			} catch(SQLException sqle1) {
+				sqle1.printStackTrace();
+			}
+		}
+		return result;
+    }
+}
