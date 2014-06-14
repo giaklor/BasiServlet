@@ -22,6 +22,7 @@ CREATE TABLE Istruttore (
 CREATE TABLE Corso (
 	Id_corso INTEGER PRIMARY KEY,
 	Nome VARCHAR(30),
+	Descrizione VARCHAR(200),
 	Data_inizio DATE,
 	Data_fine DATE NOT NULL,
 	Tipo_attivita VARCHAR(50),

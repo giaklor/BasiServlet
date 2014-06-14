@@ -41,8 +41,7 @@ public class Main extends HttpServlet {
 
 			if (ps.equals("")) {
 				// Parametro ps assente o vuoto, visualizzo la home page del sito.
-				//Vector<TipoAttBean> tipi = dbms.getTipiAttivita();
-				Vector<TipoAttBean> tipi = new Vector<TipoAttBean>();
+				Vector<TipoAttBean> tipi = dbms.getTipiAttivita();
 				request.setAttribute("tipi", tipi);
 				//Preparo il Dispatcher
 				rd = request.getRequestDispatcher("index.jsp");
@@ -83,7 +82,7 @@ public class Main extends HttpServlet {
 			
 			if (!email.equals("")) { // effettuo il login
 				if (dbms.checkLoginData(email, password)) {
-					StudenteBean stud = dbms.getStudente(email);
+					IscrittoBean stud = dbms.getStudente(email);
 					Vector<CorsoBean> corsiStud = dbms.getCorsiStudente(email);
 					request.setAttribute("stud", stud);
 					request.setAttribute("corsiStud", corsiStud);

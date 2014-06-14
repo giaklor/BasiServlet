@@ -24,6 +24,9 @@ public class DBMS {
 
 	/** Recupera le denominazioni dei tipi dei corsi offerti */
 	private static final String tipiq = "SELECT Denominazione FROM Tipo ORDER BY Denominazione";
+	
+	/** Controlla i dati di login */
+	private static final String checkLogin = "SELECT 1 FROM Iscritto WHERE email = ? AND password = ?";
 
 
 	/**
@@ -47,7 +50,40 @@ public class DBMS {
 		TipoAttBean bean = new TipoAttBean();
 		bean.setDenominazione(rs.getString("denominazione"));
 		return bean;
-	}	
+	}
+	
+	/**
+	 * Restituisce uno <tt>StudenteBean</tt> contenente le informazioni specificate.
+	 * @param rs il <tt>ResultSet</tt> contenente le informazioni estratte dal DB
+	 * @return Il bean creato.
+	 * @throws SQLException in caso i campi richiesti non siano presenti nel <tt>ResultSet</tt> passato
+	 */
+	private IscrittoBean makeStudenteBean(ResultSet rs) throws SQLException {
+		IscrittoBean bean = new IscrittoBean();
+		bean.setNome(rs.getString("nome"));
+		bean.setCognome(rs.getString("cognome"));
+		bean.setDataNascita(rs.getString("data_nascita"));
+		bean.setEmail(rs.getString("email"));
+		bean.setPassword(rs.getString("password"));
+		return bean;
+	}
+	
+	/**
+	 * Restituisce un <tt>CorsoBean</tt> contenente le informazioni specificate.
+	 * @param rs il <tt>ResultSet</tt> contenente le informazioni estratte dal DB
+	 * @return Il bean creato.
+	 * @throws SQLException in caso i campi richiesti non siano presenti nel <tt>ResultSet</tt> passato
+	 */
+	private CorsoBean makeCorsoBean(ResultSet rs) throws SQLException {
+		CorsoBean bean = new CorsoBean();
+		bean.setIdCorso(rs.getInt("id_corso"));
+		bean.setNome(rs.getString("nome"));
+		bean.setDescrizione(rs.getString("descrizione"));
+		bean.setDataInizio(rs.getString("data_inizio"));
+		bean.setDataFine(rs.getString("data_fine"));
+		bean.setTipoCorso(rs.getString("tipo_corso"));
+		return bean;
+	}
 	
 	/**
 	 * Verifica i dati dell'account specificati.
@@ -56,7 +92,28 @@ public class DBMS {
 	 * @return <tt>true</tt> se i dati sono corretti, <tt>false</tt> altrimenti.
 	 */
 	public boolean checkLoginData(String email, String password) {
-		//TODO
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			con = DriverManager.getConnection(url, user, passwd);
+			pstmt = con.prepareStatement(checkLogin); 
+			pstmt.setString(1, email);
+			pstmt.setString(2, password);
+			rs=pstmt.executeQuery(); 
+			return rs.next();
+			
+		} catch(SQLException sqle) {                /* Catturo le eventuali eccezioni! */
+			sqle.printStackTrace();
+		} finally {                                 /* Alla fine chiudo la connessione. */
+			try {
+				con.close();
+			} catch(SQLException sqle1) {
+				sqle1.printStackTrace();
+			}
+		}
 		return false;
 	}
 
@@ -94,9 +151,9 @@ public class DBMS {
 		return result;
 	}
 	
-	public StudenteBean getStudente(String email) {
+	public IscrittoBean getStudente(String email) {
 		//TODO
-		return new StudenteBean();
+		return new IscrittoBean();
 	}
 	
 	public Vector<CorsoBean> getCorsiStudente(String email) {
