@@ -10,44 +10,55 @@ import java.util.*;
 public class DBMS {
 
 	//Dati di identificazione dell'utente (da personalizzare)
-    private String user = "userlab14";
-    private String passwd = "quattordiciX8";
-	
-    /** 
-     * URL per la connessione alla base di dati e' formato dai seguenti componenti:
-     * <protocollo>://<host del server>/<nome base di dati>.
-     */
-    private String url = "jdbc:postgresql://dbserver.sci.univr.it/did2014";
-  
+	private String user = "userlab14";
+	private String passwd = "quattordiciX8";
+
+	/** 
+	 * URL per la connessione alla base di dati e' formato dai seguenti componenti:
+	 * <protocollo>://<host del server>/<nome base di dati>.
+	 */
+	private String url = "jdbc:postgresql://dbserver.sci.univr.it/did2014";
+
 	/** Driver da utilizzare per la connessione e l'esecuzione delle query. */
-    private String driver = "org.postgresql.Driver";
+	private String driver = "org.postgresql.Driver";
 
 	/** Recupera le denominazioni dei tipi dei corsi offerti */
 	private static final String tipiq = "SELECT Denominazione FROM Tipo ORDER BY Denominazione";
 
-	
-    /**
-     * Costruttore della classe. Carica i driver da utilizzare per la
-     * connessione alla base di dati.
-     *
-     * @throws ClassNotFoundException Eccezione generata nel caso in cui
-     *         i driver per la connessione non siano trovati nel CLASSPATH.
-     */
-    public DBMS() throws ClassNotFoundException {
-		Class.forName(driver);
-    }
 
-    /**
-     * Restituisce un <tt>TipoAttBean</tt> contenente le informazioni specificate.
-     * @param rs il <tt>ResultSet</tt> contenente le informazioni estratte dal DB
-     * @return Il bean creato.
-     * @throws SQLException in caso i campi richiesti non siano presenti nel <tt>ResultSet</tt> passato
-     */
-    private TipoAttBean makeTipoAttBean(ResultSet rs) throws SQLException {
-    	TipoAttBean bean = new TipoAttBean();
-    	bean.setDenominazione(rs.getString("denominazione"));
-    	return bean;
-    }	
+	/**
+	 * Costruttore della classe. Carica i driver da utilizzare per la
+	 * connessione alla base di dati.
+	 *
+	 * @throws ClassNotFoundException Eccezione generata nel caso in cui
+	 *         i driver per la connessione non siano trovati nel CLASSPATH.
+	 */
+	public DBMS() throws ClassNotFoundException {
+		Class.forName(driver);
+	}
+
+	/**
+	 * Restituisce un <tt>TipoAttBean</tt> contenente le informazioni specificate.
+	 * @param rs il <tt>ResultSet</tt> contenente le informazioni estratte dal DB
+	 * @return Il bean creato.
+	 * @throws SQLException in caso i campi richiesti non siano presenti nel <tt>ResultSet</tt> passato
+	 */
+	private TipoAttBean makeTipoAttBean(ResultSet rs) throws SQLException {
+		TipoAttBean bean = new TipoAttBean();
+		bean.setDenominazione(rs.getString("denominazione"));
+		return bean;
+	}	
+	
+	/**
+	 * Verifica i dati dell'account specificati.
+	 * @param email l'indirizzo email
+	 * @param password la password
+	 * @return <tt>true</tt> se i dati sono corretti, <tt>false</tt> altrimenti.
+	 */
+	public boolean checkLoginData(String email, String password) {
+		//TODO
+		return false;
+	}
 
 	/**
 	 * Restituisce i tipi di attivita' offerti.
@@ -60,7 +71,7 @@ public class DBMS {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		Vector<TipoAttBean> result = new Vector<TipoAttBean>();
-		
+
 		try {
 			// Tentativo di connessione al database
 			con = DriverManager.getConnection(url, user, passwd);
@@ -81,6 +92,16 @@ public class DBMS {
 			}
 		}
 		return result;
-    }
+	}
+	
+	public StudenteBean getStudente(String email) {
+		//TODO
+		return new StudenteBean();
+	}
+	
+	public Vector<CorsoBean> getCorsiStudente(String email) {
+		//TODO
+		return new Vector<CorsoBean>();
+	}
 
 }
