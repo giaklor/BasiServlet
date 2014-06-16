@@ -1,8 +1,8 @@
-/**        DBMS.java        */
 package did;
 
 import java.sql.*;
 import java.util.*;
+
 /**
  * Questa classe mette a disposizione i metodi per effettuare interrogazioni
  * sulla base di dati.
@@ -10,14 +10,14 @@ import java.util.*;
 public class DBMS {
 
 	//Dati di identificazione dell'utente (da personalizzare)
-	private String user = "userlab14";
-	private String passwd = "quattordiciX8";
+	private String user = "postgres";
+	private String passwd = "";
 
 	/** 
 	 * URL per la connessione alla base di dati e' formato dai seguenti componenti:
 	 * <protocollo>://<host del server>/<nome base di dati>.
 	 */
-	private String url = "jdbc:postgresql://dbserver.sci.univr.it/did2014";
+	private String url = "jdbc:postgresql://localhost:5432/dblab14";
 
 	/** Driver da utilizzare per la connessione e l'esecuzione delle query. */
 	private String driver = "org.postgresql.Driver";
@@ -105,9 +105,9 @@ public class DBMS {
 			rs=pstmt.executeQuery(); 
 			return rs.next();
 			
-		} catch(SQLException sqle) {                /* Catturo le eventuali eccezioni! */
+		} catch(SQLException sqle) {
 			sqle.printStackTrace();
-		} finally {                                 /* Alla fine chiudo la connessione. */
+		} finally {
 			try {
 				con.close();
 			} catch(SQLException sqle1) {

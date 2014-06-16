@@ -10,6 +10,7 @@ import did.*;
  * Questa classe gestisce le richieste HTTP
  * 
  */
+@SuppressWarnings("serial")
 public class Main extends HttpServlet {
 
 	/**
@@ -30,26 +31,25 @@ public class Main extends HttpServlet {
 		// Dichiaro l'oggetto Dispatcher necessario per passare il controllo ad una JSP o una pagina HTML
 		RequestDispatcher rd = null;
 
-		// Ottengo se presente il parametro 'ps'
 		if (request.getParameter("ps") != null) {
 			ps = request.getParameter("ps");
 		}
 
 		try {
-			// Oggetto per l'interazione con il Database
 			DBMS dbms = new DBMS();
 
-			if (ps.equals("")) {
-				// Parametro ps assente o vuoto, visualizzo la home page del sito.
+			if (ps.equals("")) { 
+				// Visualizo la home page
 				Vector<TipoAttBean> tipi = dbms.getTipiAttivita();
 				request.setAttribute("tipi", tipi);
-				//Preparo il Dispatcher
-				rd = request.getRequestDispatcher("index.jsp");
-			}
-			else if (ps.equals("login")) { // visualizzo la pagina di login
 				rd = request.getRequestDispatcher("login.jsp");
 			}
-			else if (ps.equals("tipo")) { //visualizzo i corsi e le info del tipo specificato
+			else if (ps.equals("login")) { 
+				// Visualizzo la pagina di login
+				rd = request.getRequestDispatcher("login.jsp");
+			}
+			else if (ps.equals("tipo")) { 
+				// Visualizzo i corsi e le info del tipo specificato
 				//TODO
 			}
 
