@@ -1,4 +1,4 @@
-CREATE TABLE Tipo (
+﻿CREATE TABLE Tipo (
 	Denominazione VARCHAR(50) PRIMARY KEY,
 	Descrizione VARCHAR(200)
 );
@@ -16,7 +16,7 @@ CREATE TABLE Istruttore (
 	Id_istruttore INTEGER PRIMARY KEY,
 	Nome VARCHAR(30) NOT NULL,
 	Cognome VARCHAR(30) NOT NULL,
-	Telefono VARCHAR(15),
+	Telefono VARCHAR(15)
 );
 
 CREATE TABLE Corso (
@@ -30,7 +30,7 @@ CREATE TABLE Corso (
 	Istruttore_resp INTEGER NOT NULL,
 	UNIQUE(Nome, Data_inizio),
 	CHECK(Tipo_corso IN('s', 'm')),
-	FOREIGN KEY (Istruttore) REFERENCES Istruttore(Id_istruttore),
+	FOREIGN KEY (Istruttore_resp) REFERENCES Istruttore(Id_istruttore),
 	FOREIGN KEY (Tipo_attivita) REFERENCES Tipo(Denominazione)
 );
 
@@ -56,12 +56,12 @@ CREATE TABLE Materiali_corso (
 	Materiale VARCHAR(200),
 	PRIMARY KEY (Corso, Materiale),
 	FOREIGN KEY (Corso) REFERENCES Corso(Id_corso),
-	FOREIGN KEY (Materiale) REFERENCES Materiale(Percorso)
+	FOREIGN KEY (Materiale) REFERENCES Materiale_didattico(Percorso)
 );
 
 CREATE TABLE Istruttori_Corsi (
 	Istruttore INTEGER,
-	Corso INTEGER
+	Corso INTEGER,
 	PRIMARY KEY (Istruttore, Corso),
 	FOREIGN KEY (Istruttore) REFERENCES Istruttore(Id_istruttore),
 	FOREIGN KEY (Corso) REFERENCES Corso(Id_corso)
