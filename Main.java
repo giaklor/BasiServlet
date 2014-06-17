@@ -42,7 +42,7 @@ public class Main extends HttpServlet {
 				// Visualizo la home page
 				Vector<TipoAttBean> tipi = dbms.getTipiAttivita();
 				request.setAttribute("tipi", tipi);
-				rd = request.getRequestDispatcher("login.jsp");
+				rd = request.getRequestDispatcher("index.jsp");
 			}
 			else if (ps.equals("login")) { 
 				// Visualizzo la pagina di login
@@ -82,8 +82,8 @@ public class Main extends HttpServlet {
 			
 			if (!email.equals("")) { // effettuo il login
 				if (dbms.checkLoginData(email, password)) {
-					IscrittoBean stud = dbms.getStudente(email);
-					Vector<CorsoBean> corsiStud = dbms.getCorsiStudente(email);
+					IscrittoBean stud = dbms.getIscritto(email);
+					Vector<CorsoBean> corsiStud = dbms.getCorsiIscritto(email);
 					request.setAttribute("stud", stud);
 					request.setAttribute("corsiStud", corsiStud);
 					rd = request.getRequestDispatcher("studente.jsp");

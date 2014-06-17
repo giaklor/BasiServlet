@@ -14,6 +14,19 @@ public class CorsoBean {
 	
 	private String tipoCorso;
 	
+	private IstruttoreBean istruttoreResponsabile;
+	
+	public CorsoBean() {
+		this.idCorso = 0;
+		this.nome = null;
+		this.descrizione = null;
+		this.dataInizio = null;
+		this.dataFine = null;
+		this.tipoCorso = null;
+		this.istruttoreResponsabile = null;
+	}
+
+
 	public int getIdCorso() {
 		return idCorso;
 	}
@@ -62,4 +75,11 @@ public class CorsoBean {
 		this.tipoCorso = tipoCorso;
 	}
 
+	public IstruttoreBean getIstruttoreResponsabile() {
+		return istruttoreResponsabile;
+	}
+
+	public void setIstruttoreResponsabile(IstruttoreBean istruttoreResponsabile) {
+		this.istruttoreResponsabile = istruttoreResponsabile;
+	}
 }
