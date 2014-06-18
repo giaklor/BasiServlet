@@ -27,6 +27,8 @@ public class Main extends HttpServlet {
 
 		// Definizione e recupero dell'eventuale parametro della servlet
 		String ps = "";
+		
+		String den = "";
 
 		// Dichiaro l'oggetto Dispatcher necessario per passare il controllo ad una JSP o una pagina HTML
 		RequestDispatcher rd = null;
@@ -34,12 +36,15 @@ public class Main extends HttpServlet {
 		if (request.getParameter("ps") != null) {
 			ps = request.getParameter("ps");
 		}
+		if (request.getParameter("den") != null) {
+			den = request.getParameter("den");
+		}
 
 		try {
 			DBMS dbms = new DBMS();
 
 			if (ps.equals("")) { 
-				// Visualizo la home page
+				// Visualizzo la home page
 				Vector<TipoAttBean> tipi = dbms.getTipiAttivita();
 				request.setAttribute("tipi", tipi);
 				rd = request.getRequestDispatcher("index.jsp");
@@ -48,9 +53,13 @@ public class Main extends HttpServlet {
 				// Visualizzo la pagina di login
 				rd = request.getRequestDispatcher("login.jsp");
 			}
-			else if (ps.equals("tipo")) { 
+			else if (ps.equals("tipo") && !den.equals("")) { 
 				// Visualizzo i corsi e le info del tipo specificato
-				//TODO
+				TipoAttBean tipo = dbms.getTipoAttivita(den);
+				Vector<CorsoBean> corsiTipo = dbms.getCorsiTipo(den);
+				request.setAttribute("tipo", tipo);
+				request.setAttribute("corsiTipo", corsiTipo);
+				rd = request.getRequestDispatcher("tipoAtt.jsp");
 			}
 
 			//Passo il controllo alla JSP

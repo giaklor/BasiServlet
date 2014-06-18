@@ -11,7 +11,7 @@ public class DBMS {
 
 	//Dati di identificazione dell'utente (da personalizzare)
 	private String user = "postgres";
-	private String passwd = "";
+	private String passwd = "466268";
 
 	/** 
 	 * URL per la connessione alla base di dati e' formato dai seguenti componenti:
@@ -19,11 +19,14 @@ public class DBMS {
 	 */
 	private String url = "jdbc:postgresql://localhost:5432/dblab14";
 
-	/** Driver da utilizzare per la connessione e l'esecuzione delle query. */
+	/** Driver da utilizzare per la connessione e l'esecuzione delle query */
 	private String driver = "org.postgresql.Driver";
 
-	/** Recupera le denominazioni dei tipi dei corsi offerti */
-	private static final String tipiq = "SELECT denominazione FROM Tipo ORDER BY Denominazione";
+	/** Recupera le informazioni dei tipi dei corsi offerti */
+	private static final String tipiq = "SELECT denominazione, descrizione FROM Tipo ORDER BY Denominazione";
+	
+	/** Recupera le informazioni di un tipo di attivit&grave */
+	private static final String tipoq = "SELECT denominazione, descrizione FROM Tipo WHERE denominazione = ?";
 	
 	/** Controlla i dati di login */
 	private static final String checkLogin = "SELECT 1 FROM Iscritto WHERE email = ? AND password = ?";
@@ -32,19 +35,37 @@ public class DBMS {
 	private static final String iscrittoq = "SELECT nome, cognome, to_char(data_nascita, 'DD-MM-YYYY') AS data_nascita, username, password " +
 			"FROM Iscritto WHERE email = ?";
 	
-	/** Recupera i corsi a cui è iscritto uno studente */
-	private static final String corsiIscrittoq = "SELECT C.id_corso, C.nome, C.descrizione, to_char(C.data_inizio, 'DD-MM-YYYY') AS data_inizio, " +
-			"to_char(C.data_fine, 'DD-MM-YYYY') AS data_fine, C.tipo_corso" +
-			"FROM Corso C, Iscritto I, Iscrizione IZ" +
+	/** Recupera i corsi a cui &egrave iscritto uno studente */
+	private static final String corsiIscrittoq = "SELECT C.id_corso, C.nome, C.descrizione, to_char(C.data_inizio, 'DD/MM/YYYY') AS data_inizio, " +
+			"to_char(C.data_fine, 'DD/MM/YYYY') AS data_fine, C.tipo_corso " +
+			"FROM Corso C, Iscritto I, Iscrizione IZ " +
 			"WHERE I.email = IZ.iscritto AND C.id_corso = IZ.corso AND I.email = ?";
 
 	/** Recupera i corsi di un certo tipo */
-	private static final String corsiTipoq = "SELECT C.id_corso, C.nome, C.descrizione, to_char(C.data_inizio, 'DD-MM-YYYY') AS data_inizio," +
-			"to_char(C.data_fine, 'DD-MM-YYYY') AS data_fine, C.tipo_corso, I.id_istruttore, I.nome AS nome_istr, I.cognome AS cognome_istr, " +
-			"I.telefono" +
-			"FROM Corso C, Istruttore I" +
+	private static final String corsiTipoq = "SELECT C.id_corso, C.nome, C.descrizione, to_char(C.data_inizio, 'DD/MM/YYYY') AS data_inizio," +
+			"to_char(C.data_fine, 'DD/MM/YYYY') AS data_fine, C.tipo_corso, I.id_istruttore, I.nome AS nome_istr, I.cognome AS cognome_istr, " +
+			"I.telefono " +
+			"FROM Corso C, Istruttore I " +
 			"WHERE I.id_istruttore = C.istruttore_resp AND C.tipo_attivita = ?";
+	
+	/** Recupera i dati di un corso */
+	private static final String corsoq = "SELECT C.id_corso, C.nome, C.descrizione, to_char(C.data_inizio, 'DD/MM/YYYY') AS data_inizio," +
+			"to_char(C.data_fine, 'DD/MM/YYYY') AS data_fine, C.tipo_corso, I.id_istruttore, I.nome AS nome_istr, I.cognome AS cognome_istr, " +
+			"I.telefono " +
+			"FROM Corso C, Istruttore I " +
+			"WHERE I.id_istruttore = C.istruttore_resp AND C.id_corso = ?";
+	
+	/** Recupera gli istruttori assegnati a un certo corso, ma non responsabili */
+	private static final String istruttoriAuxCorsoq = "SELECT I.nome AS nome_istr, I.cognome AS cognome_istr FROM Istruttore I, IstruttoriCorsi IC WHERE IC.corso = ?";
+	
+	/** Recupera gli iscritti a un dato corso */
+	private static final String iscrittiCorsoq = "SELECT I.nome, I.cognome, to_char(I.data_nascita, 'DD/MM/YYYY'), I.email, "
+			+ "I.password, to_char(IZ.data_iscrizione, 'DD/MM/YYYY') FROM Iscritto I, Iscrizione IZ WHERE IZ.iscritto = I.email AND IZ.corso = ?";
 
+	/** Recupera il materiale di un corso */
+	private static final String materialeCorsoq = "SELECT M.percorso, M.nome, M.tipo, M.formato "
+			+ "FROM Materiale_Didattico M, Materiali_Corso MC WHERE M.percorso = MC.materiale AND MC.corso = ?";
+	
 	/**
 	 * Costruttore della classe. Carica i driver da utilizzare per la
 	 * connessione alla base di dati.
@@ -65,6 +86,7 @@ public class DBMS {
 	private TipoAttBean makeTipoAttBean(ResultSet rs) throws SQLException {
 		TipoAttBean bean = new TipoAttBean();
 		bean.setDenominazione(rs.getString("denominazione"));
+		bean.setDescrizione(rs.getString("descrizione"));
 		return bean;
 	}
 	
@@ -127,6 +149,34 @@ public class DBMS {
 		bean.setTelefono(rs.getString("telefono"));
 		return bean;
 	}
+	
+	/**
+	 * Restituisce un <tt>IscrizioneBean</tt> contenente le informazioni specificate.
+	 * @param rs il <tt>ResultSet</tt> contenente le informazioni estratte dal DB
+	 * @return Il bean creato.
+	 * @throws SQLException in caso i campi richiesti non siano presenti nel <tt>ResultSet</tt> passato
+	 */
+	private IscrizioneBean makeIscrizioneBean(ResultSet rs) throws SQLException {
+		IscrizioneBean bean = new IscrizioneBean();
+		bean.setIscritto(makeIscrittoBean(rs));
+		bean.setDataIscrizione(rs.getString("data_iscr"));
+		return bean;
+	}
+	
+	/**
+	 * Restituisce un <tt>MaterialeBean</tt> contenente le informazioni specificate.
+	 * @param rs il <tt>ResultSet</tt> contenente le informazioni estratte dal DB
+	 * @return Il bean creato.
+	 * @throws SQLException in caso i campi richiesti non siano presenti nel <tt>ResultSet</tt> passato
+	 */
+	private MaterialeBean makeMaterialeBean(ResultSet rs) throws SQLException {
+		MaterialeBean bean = new MaterialeBean();
+		bean.setPercorso(rs.getString("percorso"));
+		bean.setNome(rs.getString("nome"));
+		bean.setTipo(rs.getString("tipo"));
+		bean.setFormato(rs.getString("formato"));
+		return bean;
+	}
 
 	/**
 	 * Verifica i dati dell'account specificati.
@@ -186,6 +236,40 @@ public class DBMS {
 		} catch(SQLException sqle) {                /* Catturo le eventuali eccezioni! */
 			sqle.printStackTrace();
 		} finally {                                 /* Alla fine chiudo la connessione. */
+			try {
+				if(con != null)
+					con.close();
+			} catch(SQLException sqle1) {
+				sqle1.printStackTrace();
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * Restituisce le informazioni del tipo di attivit&agrave specificato.
+	 * @param denominazione l'identificatore del tipo
+	 * @return Il bean con le informazioni del tipo.
+	 * @see TipoAttBean
+	 */
+	public TipoAttBean getTipoAttivita(String denominazione) {
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		TipoAttBean result = null;
+		
+		try {
+			con = DriverManager.getConnection(url, user, passwd);
+			pstmt = con.prepareStatement(tipoq); 
+			pstmt.setString(1, denominazione);
+			rs=pstmt.executeQuery(); 
+			if(rs.next())
+				result = makeTipoAttBean(rs);
+			
+		} catch(SQLException sqle) {
+			sqle.printStackTrace();
+		} finally {
 			try {
 				if(con != null)
 					con.close();
@@ -266,6 +350,99 @@ public class DBMS {
 			rs=pstmt.executeQuery(); 
 			while(rs.next())
 				result.add(makeCorsoIBean(rs));
+			
+		} catch(SQLException sqle) {
+			sqle.printStackTrace();
+		} finally {
+			try {
+				if(con != null)
+					con.close();
+			} catch(SQLException sqle1) {
+				sqle1.printStackTrace();
+			}
+		}
+		return result;
+	}
+	
+	public Vector<IstruttoreBean> getIstruttoriCorso(int idCorso) {
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Vector<IstruttoreBean> result = new Vector<IstruttoreBean>();
+		
+		try {
+			con = DriverManager.getConnection(url, user, passwd);
+			// Recupera l'istruttore responsabile
+			pstmt = con.prepareStatement(corsoq); 
+			pstmt.setInt(1, idCorso);
+			rs=pstmt.executeQuery(); 
+			if(rs.next())
+				result.add(makeIstruttoreBean(rs));
+			
+			// Aggiunge gli altri istruttori se esistono
+			pstmt = con.prepareStatement(istruttoriAuxCorsoq); 
+			pstmt.setInt(1, idCorso);
+			rs=pstmt.executeQuery(); 
+			while(rs.next())
+				result.add(makeIstruttoreBean(rs));
+			
+		} catch(SQLException sqle) {
+			sqle.printStackTrace();
+		} finally {
+			try {
+				if(con != null)
+					con.close();
+			} catch(SQLException sqle1) {
+				sqle1.printStackTrace();
+			}
+		}
+		return result;
+
+	}
+
+	public Vector<IscrizioneBean> getIscrittiCorso(int idCorso) {
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Vector<IscrizioneBean> result = new Vector<IscrizioneBean>();
+		
+		try {
+			con = DriverManager.getConnection(url, user, passwd);
+			pstmt = con.prepareStatement(iscrittiCorsoq); 
+			pstmt.setInt(1, idCorso);
+			rs=pstmt.executeQuery(); 
+			while(rs.next())
+				result.add(makeIscrizioneBean(rs));
+			
+		} catch(SQLException sqle) {
+			sqle.printStackTrace();
+		} finally {
+			try {
+				if(con != null)
+					con.close();
+			} catch(SQLException sqle1) {
+				sqle1.printStackTrace();
+			}
+		}
+		return result;
+	}
+	
+	public Vector<MaterialeBean> getMaterialiCorso(int idCorso) {
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Vector<MaterialeBean> result = new Vector<MaterialeBean>();
+		
+		try {
+			con = DriverManager.getConnection(url, user, passwd);
+			pstmt = con.prepareStatement(materialeCorsoq); 
+			pstmt.setInt(1, idCorso);
+			rs=pstmt.executeQuery(); 
+			while(rs.next())
+				result.add(makeMaterialeBean(rs));
 			
 		} catch(SQLException sqle) {
 			sqle.printStackTrace();
