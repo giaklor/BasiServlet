@@ -456,4 +456,32 @@ public class DBMS {
 		}
 		return result;
 	}
+	
+	public CorsoBean getCorso(int idCorso) {
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		CorsoBean result = null;
+		
+		try {
+			con = DriverManager.getConnection(url, user, passwd);
+			pstmt = con.prepareStatement(corsoq); 
+			pstmt.setInt(1, idCorso);
+			rs=pstmt.executeQuery(); 
+			if(rs.next())
+				result = makeCorsoIBean(rs);
+			
+		} catch(SQLException sqle) {
+			sqle.printStackTrace();
+		} finally {
+			try {
+				if(con != null)
+					con.close();
+			} catch(SQLException sqle1) {
+				sqle1.printStackTrace();
+			}
+		}
+		return result;
+	}
 }

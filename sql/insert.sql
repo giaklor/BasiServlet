@@ -1,10 +1,4 @@
-﻿/*
-
-materiale di un certo corso
-iscritti di un certo corso (iscrizione bean con iscrittobean all'interno e data iscrizione al corso specificato)
-
-*/
-INSERT INTO Tipo 
+﻿INSERT INTO Tipo 
 VALUES ('Body building', 'Per lo sviluppo e potenziamento della massa muscolare.');
 
 INSERT INTO Tipo

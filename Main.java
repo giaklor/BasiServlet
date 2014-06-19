@@ -29,6 +29,8 @@ public class Main extends HttpServlet {
 		String ps = "";
 		
 		String den = "";
+		
+		String idCorso = "";
 
 		// Dichiaro l'oggetto Dispatcher necessario per passare il controllo ad una JSP o una pagina HTML
 		RequestDispatcher rd = null;
@@ -38,6 +40,9 @@ public class Main extends HttpServlet {
 		}
 		if (request.getParameter("den") != null) {
 			den = request.getParameter("den");
+		}
+		if (request.getParameter("idCorso") != null) {
+			idCorso = request.getParameter("idCorso");
 		}
 
 		try {
@@ -60,6 +65,17 @@ public class Main extends HttpServlet {
 				request.setAttribute("tipo", tipo);
 				request.setAttribute("corsiTipo", corsiTipo);
 				rd = request.getRequestDispatcher("tipoAtt.jsp");
+			}
+			else if (ps.equals("corso") && !idCorso.equals("")) { 
+				// Visualizzo la pagina del corso
+				int id = Integer.parseInt(idCorso);
+				CorsoBean corso = dbms.getCorso(id);
+				Vector<IscrizioneBean> iscritti = dbms.getIscrittiCorso(id);
+				Vector<MaterialeBean> materiale = dbms.getMaterialiCorso(id);
+				request.setAttribute("corso", corso);
+				request.setAttribute("iscritti", iscritti);
+				request.setAttribute("materiale", materiale);
+				rd = request.getRequestDispatcher("corso.jsp");
 			}
 
 			//Passo il controllo alla JSP
