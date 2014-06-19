@@ -39,7 +39,7 @@ public class DBMS {
 	private static final String corsiIscrittoq = "SELECT C.id_corso, C.nome, C.descrizione, to_char(C.data_inizio, 'DD/MM/YYYY') AS data_inizio, " +
 			"to_char(C.data_fine, 'DD/MM/YYYY') AS data_fine, C.tipo_corso " +
 			"FROM Corso C, Iscritto I, Iscrizione IZ " +
-			"WHERE I.email = IZ.iscritto AND C.id_corso = IZ.corso AND I.email = ?";
+			"WHERE I.email = IZ.iscritto AND C.id_corso = IZ.corso AND I.username = ?";
 
 	/** Recupera i corsi di un certo tipo */
 	private static final String corsiTipoq = "SELECT C.id_corso, C.nome, C.descrizione, to_char(C.data_inizio, 'DD/MM/YYYY') AS data_inizio," +
@@ -308,7 +308,7 @@ public class DBMS {
 		return result;
 	}
 	
-	public Vector<CorsoBean> getCorsiIscritto(String email) {
+	public Vector<CorsoBean> getCorsiIscritto(String username) {
 		
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -318,7 +318,7 @@ public class DBMS {
 		try {
 			con = DriverManager.getConnection(url, user, passwd);
 			pstmt = con.prepareStatement(corsiIscrittoq); 
-			pstmt.setString(1, email);
+			pstmt.setString(1, username);
 			rs=pstmt.executeQuery(); 
 			while(rs.next())
 				result.add(makeCorsoBean(rs));
