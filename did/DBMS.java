@@ -32,7 +32,7 @@ public class DBMS {
 	private static final String checkLogin = "SELECT username FROM Iscritto WHERE username = ? AND password = ?";
 	
 	/** Recupera i dati di un iscritto */
-	private static final String iscrittoq = "SELECT nome, cognome, email, to_char(data_nascita, 'DD-MM-YYYY') AS data_nascita, username, password " +
+	private static final String iscrittoq = "SELECT nome, cognome, email, to_char(data_nascita, 'DD/MM/YYYY') AS data_nascita, username, password " +
 			"FROM Iscritto WHERE username = ?";
 	
 	/** Recupera i corsi a cui &egrave iscritto uno studente */
