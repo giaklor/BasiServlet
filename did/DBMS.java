@@ -29,11 +29,11 @@ public class DBMS {
 	private static final String tipoq = "SELECT denominazione, descrizione FROM Tipo WHERE denominazione = ?";
 	
 	/** Controlla i dati di login */
-	private static final String checkLogin = "SELECT 1 FROM Iscritto WHERE username = ? AND password = ?";
+	private static final String checkLogin = "SELECT username FROM Iscritto WHERE username = ? AND password = ?";
 	
 	/** Recupera i dati di un iscritto */
-	private static final String iscrittoq = "SELECT nome, cognome, to_char(data_nascita, 'DD-MM-YYYY') AS data_nascita, username, password " +
-			"FROM Iscritto WHERE email = ?";
+	private static final String iscrittoq = "SELECT nome, cognome, email, to_char(data_nascita, 'DD-MM-YYYY') AS data_nascita, username, password " +
+			"FROM Iscritto WHERE username = ?";
 	
 	/** Recupera i corsi a cui &egrave iscritto uno studente */
 	private static final String corsiIscrittoq = "SELECT C.id_corso, C.nome, C.descrizione, to_char(C.data_inizio, 'DD/MM/YYYY') AS data_inizio, " +
@@ -198,7 +198,6 @@ public class DBMS {
 			pstmt.setString(2, password);
 			rs=pstmt.executeQuery();
 			return rs.next();
-			
 		} catch(SQLException sqle) {
 			sqle.printStackTrace();
 		} finally {
@@ -281,7 +280,7 @@ public class DBMS {
 		return result;
 	}
 	
-	public IscrittoBean getIscritto(String email) {
+	public IscrittoBean getIscritto(String username) {
 		
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -291,7 +290,7 @@ public class DBMS {
 		try {
 			con = DriverManager.getConnection(url, user, passwd);
 			pstmt = con.prepareStatement(iscrittoq); 
-			pstmt.setString(1, email);
+			pstmt.setString(1, username);
 			rs=pstmt.executeQuery(); 
 			if(rs.next())
 				result = makeIscrittoBean(rs);

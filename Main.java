@@ -94,29 +94,29 @@ public class Main extends HttpServlet {
 		
 		RequestDispatcher rd = null;
 		
-		String email = "";
+		String username = "";
 		String password = "";
+		
+		if (request.getParameter("username") != null) {
+			username = request.getParameter("username");
+		}
+		if (request.getParameter("pwd") != null) {
+			password = request.getParameter("pwd");
+		}
 		
 		try {
 			DBMS dbms = new DBMS();
-		
-			if (request.getParameter("email") != null) {
-				email = request.getParameter("email");
-			}
-			if (request.getParameter("password") != null) {
-				password = request.getParameter("pwd");
-			}
 			
-			if (!email.equals("")) { // effettuo il login
-				if (dbms.checkLoginData(email, password)) {
-					IscrittoBean stud = dbms.getIscritto(email);
-					Vector<CorsoBean> corsiIscritto = dbms.getCorsiIscritto(email);
+			if (!username.equals("") && !password.equals("")) { // effettuo il login
+				if (dbms.checkLoginData(username, password)) {
+					IscrittoBean iscritto = dbms.getIscritto(username);
+					Vector<CorsoBean> corsiIscritto = dbms.getCorsiIscritto(username);
 					Map<Integer, Vector<MaterialeBean>> materiali = new HashMap<Integer, Vector<MaterialeBean>>();
 					for (CorsoBean c : corsiIscritto) {
 						Vector<MaterialeBean> m = dbms.getMaterialiCorso(c.getIdCorso());
 						materiali.put(c.getIdCorso(), m);
 					}
-					request.setAttribute("stud", stud);
+					request.setAttribute("iscritto", iscritto);
 					request.setAttribute("corsiIscritto", corsiIscritto);
 					request.setAttribute("materiali", materiali);
 					rd = request.getRequestDispatcher("iscritto.jsp");
