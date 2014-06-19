@@ -8,7 +8,7 @@ CREATE TABLE Iscritto (
 	Nome VARCHAR(30) NOT NULL,
 	Cognome VARCHAR(30) NOT NULL,
 	Data_nascita DATE,
-	Username VARCHAR(20) NOT NULL,
+	Username VARCHAR(20) UNIQUE NOT NULL,
 	Password VARCHAR(20) NOT NULL
 );
 
