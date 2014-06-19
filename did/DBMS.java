@@ -11,7 +11,7 @@ public class DBMS {
 
 	//Dati di identificazione dell'utente (da personalizzare)
 	private String user = "postgres";
-	private String passwd = "466268";
+	private String passwd = "";
 
 	/** 
 	 * URL per la connessione alla base di dati e' formato dai seguenti componenti:
@@ -29,7 +29,7 @@ public class DBMS {
 	private static final String tipoq = "SELECT denominazione, descrizione FROM Tipo WHERE denominazione = ?";
 	
 	/** Controlla i dati di login */
-	private static final String checkLogin = "SELECT 1 FROM Iscritto WHERE email = ? AND password = ?";
+	private static final String checkLogin = "SELECT 1 FROM Iscritto WHERE username = ? AND password = ?";
 	
 	/** Recupera i dati di un iscritto */
 	private static final String iscrittoq = "SELECT nome, cognome, to_char(data_nascita, 'DD-MM-YYYY') AS data_nascita, username, password " +
@@ -56,11 +56,12 @@ public class DBMS {
 			"WHERE I.id_istruttore = C.istruttore_resp AND C.id_corso = ?";
 	
 	/** Recupera gli istruttori assegnati a un certo corso, ma non responsabili */
-	private static final String istruttoriAuxCorsoq = "SELECT I.nome AS nome_istr, I.cognome AS cognome_istr FROM Istruttore I, IstruttoriCorsi IC WHERE IC.corso = ?";
+	private static final String istruttoriAuxCorsoq = "SELECT I.id_istruttore, I.nome AS nome_istr, I.cognome AS cognome_istr, I.telefono "
+			+ "FROM Istruttore I, Istruttori_Corsi IC WHERE IC.istruttore = I.id_istruttore AND IC.corso = ?";
 	
 	/** Recupera gli iscritti a un dato corso */
-	private static final String iscrittiCorsoq = "SELECT I.nome, I.cognome, to_char(I.data_nascita, 'DD/MM/YYYY'), I.email, "
-			+ "I.password, to_char(IZ.data_iscrizione, 'DD/MM/YYYY') FROM Iscritto I, Iscrizione IZ WHERE IZ.iscritto = I.email AND IZ.corso = ?";
+	private static final String iscrittiCorsoq = "SELECT I.nome, I.cognome, to_char(I.data_nascita, 'DD/MM/YYYY') AS data_nascita, I.email, "
+			+ "I.password, to_char(IZ.data_iscrizione, 'DD/MM/YYYY') AS data_iscr FROM Iscritto I, Iscrizione IZ WHERE IZ.iscritto = I.email AND IZ.corso = ?";
 
 	/** Recupera il materiale di un corso */
 	private static final String materialeCorsoq = "SELECT M.percorso, M.nome, M.tipo, M.formato "
@@ -180,11 +181,11 @@ public class DBMS {
 
 	/**
 	 * Verifica i dati dell'account specificati.
-	 * @param email l'indirizzo email
+	 * @param username il nome utente
 	 * @param password la password
 	 * @return <tt>true</tt> se i dati sono corretti, <tt>false</tt> altrimenti.
 	 */
-	public boolean checkLoginData(String email, String password) {
+	public boolean checkLoginData(String username, String password) {
 		
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -193,9 +194,9 @@ public class DBMS {
 		try {
 			con = DriverManager.getConnection(url, user, passwd);
 			pstmt = con.prepareStatement(checkLogin); 
-			pstmt.setString(1, email);
+			pstmt.setString(1, username);
 			pstmt.setString(2, password);
-			rs=pstmt.executeQuery(); 
+			rs=pstmt.executeQuery();
 			return rs.next();
 			
 		} catch(SQLException sqle) {
@@ -364,7 +365,7 @@ public class DBMS {
 		return result;
 	}
 	
-	public Vector<IstruttoreBean> getIstruttoriCorso(int idCorso) {
+	public Vector<IstruttoreBean> getIstruttoriAuxCorso(int idCorso) {
 		
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -373,14 +374,6 @@ public class DBMS {
 		
 		try {
 			con = DriverManager.getConnection(url, user, passwd);
-			// Recupera l'istruttore responsabile
-			pstmt = con.prepareStatement(corsoq); 
-			pstmt.setInt(1, idCorso);
-			rs=pstmt.executeQuery(); 
-			if(rs.next())
-				result.add(makeIstruttoreBean(rs));
-			
-			// Aggiunge gli altri istruttori se esistono
 			pstmt = con.prepareStatement(istruttoriAuxCorsoq); 
 			pstmt.setInt(1, idCorso);
 			rs=pstmt.executeQuery(); 

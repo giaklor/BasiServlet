@@ -25,6 +25,9 @@ VALUES (3, 'Antonella', 'Marchi', '3331098473');
 INSERT INTO Istruttore
 VALUES (4, 'Paola', 'Mantovani', '3342312980');
 
+INSERT INTO Istruttore
+VALUES (5, 'Carlo', 'Bellotti', '3923423091');
+
 
 INSERT INTO Corso
 VALUES (1, 'Stretch & Tone', 'Attività a medio impatto di rinforzo muscolare che prevede esercizi a corpo libero o con piccoli attrezzi con musica di sottofondo.', '2014-07-15','2014-11-01', 'Body building', 's', 3);
@@ -46,3 +49,31 @@ VALUES (6, 'Body Tone', 'Sequenze di esercizi eseguiti a terra e in piedi con l'
 
 INSERT INTO Corso
 VALUES (7, 'Aerobica', 'Migliora respirazione, resistenza ed elasticità muscolare. Aiuta a perdere peso.', '2014-06-27', '2014-12-01', 'Cardio', 'm', 4);
+
+
+INSERT INTO Istruttori_Corsi
+VALUES (1, 5);
+
+INSERT INTO Istruttori_Corsi
+VALUES (5, 5);
+
+INSERT INTO Iscritto
+VALUES ('alessia.verdelli@gmail.com', 'Alessia', 'Verdelli', '1990-05-28', 'alessia', 'verd');
+
+INSERT INTO Iscritto
+VALUES ('francesco.gallusi@gmail.com', 'Francesco', 'Gallusi', '1987-10-01', 'francesco', 'gall');
+
+INSERT INTO Iscritto
+VALUES ('mirko.scaglioni@gmail.com', 'Mirko', 'Scaglioni', '1975-01-31', 'mirko', 'scag');
+
+INSERT INTO Iscritto
+VALUES ('daniela.silvani@gmail.com', 'Daniela', 'Silvani', '1958-11-24', 'daniela', 'silv');
+
+INSERT INTO Iscrizione
+VALUES ('2014-02-10', 'alessia.verdelli@gmail.com', 7);
+
+INSERT INTO Iscrizione
+VALUES ('2014-05-31', 'mirko.scaglioni@gmail.com', 6);
+
+INSERT INTO Iscrizione
+VALUES ('2014-06-02', 'francesco.gallusi@gmail.com', 6);

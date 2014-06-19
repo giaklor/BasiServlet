@@ -72,9 +72,11 @@ public class Main extends HttpServlet {
 				CorsoBean corso = dbms.getCorso(id);
 				Vector<IscrizioneBean> iscritti = dbms.getIscrittiCorso(id);
 				Vector<MaterialeBean> materiale = dbms.getMaterialiCorso(id);
+				Vector<IstruttoreBean> istruttoriAux = dbms.getIstruttoriAuxCorso(id);
 				request.setAttribute("corso", corso);
 				request.setAttribute("iscritti", iscritti);
 				request.setAttribute("materiale", materiale);
+				request.setAttribute("istruttoriAux", istruttoriAux);
 				rd = request.getRequestDispatcher("corso.jsp");
 			}
 
@@ -108,10 +110,16 @@ public class Main extends HttpServlet {
 			if (!email.equals("")) { // effettuo il login
 				if (dbms.checkLoginData(email, password)) {
 					IscrittoBean stud = dbms.getIscritto(email);
-					Vector<CorsoBean> corsiStud = dbms.getCorsiIscritto(email);
+					Vector<CorsoBean> corsiIscritto = dbms.getCorsiIscritto(email);
+					Map<Integer, Vector<MaterialeBean>> materiali = new HashMap<Integer, Vector<MaterialeBean>>();
+					for (CorsoBean c : corsiIscritto) {
+						Vector<MaterialeBean> m = dbms.getMaterialiCorso(c.getIdCorso());
+						materiali.put(c.getIdCorso(), m);
+					}
 					request.setAttribute("stud", stud);
-					request.setAttribute("corsiStud", corsiStud);
-					rd = request.getRequestDispatcher("studente.jsp");
+					request.setAttribute("corsiIscritto", corsiIscritto);
+					request.setAttribute("materiali", materiali);
+					rd = request.getRequestDispatcher("iscritto.jsp");
 				}
 				else {
 					request.setAttribute("failed", "");
