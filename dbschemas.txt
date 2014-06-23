@@ -7,12 +7,12 @@ parameter ()
 DB to page schema tipoCorsoPage
 parameter (tipo)
 (
-   denominazione, descrizione: SELECT denominazione, descrizione FROM Tipo WHERE denominazione = tipo;
+   denominazione, descrizione: SELECT denominazione, descrizione FROM Tipo WHERE denominazione = ?tipo?;
    
-   id_corso, nome, nome_istr, cognome_istr, data_inizio, data_fine: SELECT C.id_corso, C.nome, C.descrizione, 
+   corsi: SELECT C.id_corso, C.nome, C.descrizione, 
       C.data_inizio, C.data_fine, C.tipo_corso, I.id_istruttore, I.nome AS nome_istr, I.cognome AS cognome_istr, I.telefono 
 		FROM Corso C, Istruttore I 
-		WHERE I.id_istruttore = C.istruttore_resp AND C.tipo_attivita = tipo;
+		WHERE I.id_istruttore = C.istruttore_resp AND C.tipo_attivita = ?tipo?;
 )
 
 DB to page schema corsoPage
@@ -21,15 +21,28 @@ parameter (id_corso)
    nome, descrizione, nome_istr, cognome_istr, data_inizio, data_fine: SELECT C.id_corso, C.nome, C.descrizione, 
       C.data_inizio, C.data_fine, C.tipo_corso, I.id_istruttore, I.nome AS nome_istr, I.cognome AS cognome_istr, I.telefono
 		FROM Corso C, Istruttore I
-		WHERE I.id_istruttore = C.istruttore_resp AND C.id_corso = id_corso;
+		WHERE I.id_istruttore = C.istruttore_resp AND C.id_corso = ?id_corso?;
 		
-   nome_istr_agg, cognome_istr_agg: SELECT I.id_istruttore, I.nome AS nome_istr_agg, I.cognome AS cognome_istr_agg, I.telefono
-		FROM Istruttore I, Istruttori_Corsi IC WHERE IC.istruttore = I.id_istruttore AND IC.corso = id_corso;
+   istruttori: SELECT I.id_istruttore, I.nome AS nome_istr_agg, I.cognome AS cognome_istr_agg, I.telefono
+		FROM Istruttore I, Istruttori_Corsi IC WHERE IC.istruttore = I.id_istruttore AND IC.corso = ?id_corso?;
 		
-	nome_iscritto, cognome_iscritto, data_iscr: SELECT I.nome AS nome_iscritto, I.cognome AS cognome_iscritto, I.data_nascita, 
+	iscritti: SELECT I.nome AS nome_iscritto, I.cognome AS cognome_iscritto, I.data_nascita, 
 	   I.email, I.password, IZ.data_iscrizione AS data_iscr 
-	   FROM Iscritto I, Iscrizione IZ WHERE IZ.iscritto = I.email AND IZ.corso = id_corso;
+	   FROM Iscritto I, Iscrizione IZ WHERE IZ.iscritto = I.email AND IZ.corso = ?id_corso?;
 	   
-	nome_mat, tipo_mat, formato_mat: SELECT M.percorso, M.nome AS nome_mat, M.tipo AS tipo_mat, M.formato AS formato_mat
-		FROM Materiale_Didattico M, Materiali_Corso MC WHERE M.percorso = MC.materiale AND MC.corso = id_corso;
+	materiale_did: SELECT M.percorso, M.nome AS nome_mat, M.tipo AS tipo_mat, M.formato AS formato_mat
+		FROM Materiale_Didattico M, Materiali_Corso MC WHERE M.percorso = MC.materiale AND MC.corso = ?id_corso?;
+)
+
+DB to page schema iscrittoPage
+parameter (username, id_corso)
+(
+   nome, cognome, data_nascita: SELECT nome, cognome, email, data_nascita, username, password FROM Iscritto WHERE username = ?username?;
+   
+   corsi: SELECT C.id_corso, C.nome, C.descrizione, C.data_inizio, C.data_fine, C.tipo_corso
+		   FROM Corso C, Iscritto I, Iscrizione IZ
+			WHERE I.email = IZ.iscritto AND C.id_corso = IZ.corso AND I.username = ?username?
+			
+	materiale_did: SELECT M.percorso, M.nome AS nome_mat, M.tipo AS tipo_mat, M.formato AS formato_mat
+		FROM Materiale_Didattico M, Materiali_Corso MC WHERE M.percorso = MC.materiale AND MC.corso = ?id_corso?;
 )

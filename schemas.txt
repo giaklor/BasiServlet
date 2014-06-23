@@ -42,3 +42,16 @@ page schema corsoPage (
       formato_mat: string;
    );
 )
+
+page schema iscrittoPage (
+
+   nome: string;
+   cognome: string;
+   data_nascita: date;
+   corsi: list_of (
+      nome_corso: string;
+      materiale_did: list_of (
+         nome_mat: link(nome_mat: string; url(link_mat, mat_address));
+      );
+   );
+)
