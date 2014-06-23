@@ -1,0 +1,44 @@
+page schema homePage unique (
+
+   tipiCorso: list_of (
+      denominazione: link(denominazione: string; *tipoCorsoPage);
+   );
+)
+
+page schema tipoCorsoPage (
+   
+   denominazione: string;
+   descrizione: string;
+   corsi: list_of (
+      id_corso: link(id_corso: int; *corsoPage);
+      nome: string;
+      nome_istr: string;
+      cognome_istr: string;
+      data_inizio: date;
+      data_fine: date;
+   );
+)
+
+page schema corsoPage (
+
+   nome: string;
+   descrizione: string;
+   nome_istr: string;
+   cognome_istr: string;
+   istruttori: list_of (
+      nome_istr_agg: string;
+      cognome_istr_agg: string;
+   );
+   data_inizio: date;
+   data_fine: date;
+   iscritti: list_of (
+      nome_iscritto: string;
+      cognome_iscritto: string;
+      data_iscr: date;
+   );
+   materiale_did: list_of (
+      nome_mat: link(nome_mat: string; url(link_mat, mat_address));
+      tipo_mat: string;
+      formato_mat: string;
+   );
+)
