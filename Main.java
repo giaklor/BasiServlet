@@ -25,7 +25,7 @@ public class Main extends HttpServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 
-		// Definizione e recupero dell'eventuale parametro della servlet
+		// Definizione e recupero degli eventuali parametri della servlet
 		String ps = "";
 		
 		String den = "";
