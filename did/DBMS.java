@@ -61,7 +61,7 @@ public class DBMS {
 	
 	/** Recupera gli iscritti a un dato corso */
 	private static final String iscrittiCorsoq = "SELECT I.nome, I.cognome, to_char(I.data_nascita, 'DD/MM/YYYY') AS data_nascita, I.email, "
-			+ "I.password, to_char(IZ.data_iscrizione, 'DD/MM/YYYY') AS data_iscr FROM Iscritto I, Iscrizione IZ WHERE IZ.iscritto = I.email AND IZ.corso = ?";
+			+ "to_char(IZ.data_iscrizione, 'DD/MM/YYYY') AS data_iscr FROM Iscritto I, Iscrizione IZ WHERE IZ.iscritto = I.email AND IZ.corso = ?";
 
 	/** Recupera il materiale di un corso */
 	private static final String materialeCorsoq = "SELECT M.percorso, M.nome, M.tipo, M.formato "
