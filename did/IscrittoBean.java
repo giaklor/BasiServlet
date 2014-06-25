@@ -10,14 +10,12 @@ public class IscrittoBean {
 	
 	private String email;
 	
-	private String password;
 	
 	public IscrittoBean() {
 		nome = null;
 		cognome = null;
 		dataNascita = null;
 		email = null;
-		password = null;
 	}
 	
 	public String getNome() {
@@ -50,14 +48,6 @@ public class IscrittoBean {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 }
