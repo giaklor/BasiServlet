@@ -26,6 +26,8 @@ parameter (id_corso)
    istruttori: SELECT I.id_istruttore, I.nome AS nome_istr_agg, I.cognome AS cognome_istr_agg, I.telefono
 		FROM Istruttore I, Istruttori_Corsi IC WHERE IC.istruttore = I.id_istruttore AND IC.corso = ?id_corso?;
 		
+   lezioni: SELECT giorno, ora_inizio, ora_fine FROM Lezione WHERE corso = ?id_corso?;
+		
 	iscritti: SELECT I.nome AS nome_iscritto, I.cognome AS cognome_iscritto, I.data_nascita, 
 	   I.email, I.password, IZ.data_iscrizione AS data_iscr 
 	   FROM Iscritto I, Iscrizione IZ WHERE IZ.iscritto = I.email AND IZ.corso = ?id_corso?;

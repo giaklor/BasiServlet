@@ -31,6 +31,11 @@ page schema corsoPage (
    );
    data_inizio: date;
    data_fine: date;
+   lezioni: list_of (
+      giorno: string;
+      ora_inizio: time;
+      ora_fine: time;
+   );
    iscritti: list_of (
       nome_iscritto: string;
       cognome_iscritto: string;
