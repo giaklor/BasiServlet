@@ -10,8 +10,8 @@ import java.util.*;
 public class DBMS {
 
 	//Dati di identificazione dell'utente (da personalizzare)
-	private String user = "";
-	private String passwd = "";
+	private String user = "userlab14";
+	private String passwd = "quattordiciX8";
 
 	/** 
 	 * URL per la connessione alla base di dati e' formato dai seguenti componenti:
@@ -66,6 +66,10 @@ public class DBMS {
 	/** Recupera il materiale di un corso */
 	private static final String materialeCorsoq = "SELECT M.percorso, M.nome, M.tipo, M.formato "
 			+ "FROM Materiale_Didattico M, Materiali_Corso MC WHERE M.percorso = MC.materiale AND MC.corso = ?";
+	
+	/** Recupera le lezioni di un corso */
+	private static final String lezioniCorsoq = "SELECT giorno, to_char(ora_inizio, 'HH24:MI') AS ora_inizio, to_char(ora_fine, 'HH24:MI') AS ora_fine "
+			+ "FROM Lezione WHERE corso = ?";
 	
 	/**
 	 * Costruttore della classe. Carica i driver da utilizzare per la
@@ -175,6 +179,20 @@ public class DBMS {
 		bean.setNome(rs.getString("nome"));
 		bean.setTipo(rs.getString("tipo"));
 		bean.setFormato(rs.getString("formato"));
+		return bean;
+	}
+	
+	/**
+	 * Restituisce un <tt>LezioneBean</tt> contenente le informazioni specificate.
+	 * @param rs il <tt>ResultSet</tt> contenente le informazioni estratte dal DB
+	 * @return Il bean creato.
+	 * @throws SQLException in caso i campi richiesti non siano presenti nel <tt>ResultSet</tt> passato
+	 */
+	private LezioneBean makeLezioneBean(ResultSet rs) throws SQLException {
+		LezioneBean bean = new LezioneBean();
+		bean.setGiorno(rs.getInt("giorno"));
+		bean.setOraInizio(rs.getString("ora_inizio"));
+		bean.setOraFine(rs.getString("ora_fine"));
 		return bean;
 	}
 
@@ -497,6 +515,39 @@ public class DBMS {
 			rs=pstmt.executeQuery(); 
 			if(rs.next())
 				result = makeCorsoIBean(rs);
+			
+		} catch(SQLException sqle) {
+			sqle.printStackTrace();
+		} finally {
+			try {
+				if(con != null)
+					con.close();
+			} catch(SQLException sqle1) {
+				sqle1.printStackTrace();
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * Restituisce le lezioni del corso specificato.
+	 * @param idCorso L'id del corso
+	 * @return Il vettore delle lezioni.
+	 */
+	public Vector<LezioneBean> getLezioniCorso(int idCorso) {
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Vector<LezioneBean> result = new Vector<LezioneBean>();
+		
+		try {
+			con = DriverManager.getConnection(url, user, passwd);
+			pstmt = con.prepareStatement(lezioniCorsoq); 
+			pstmt.setInt(1, idCorso);
+			rs=pstmt.executeQuery(); 
+			while(rs.next())
+				result.add(makeLezioneBean(rs));
 			
 		} catch(SQLException sqle) {
 			sqle.printStackTrace();
