@@ -73,10 +73,12 @@ public class Main extends HttpServlet {
 				Vector<IscrizioneBean> iscritti = dbms.getIscrittiCorso(id);
 				Vector<MaterialeBean> materiale = dbms.getMaterialiCorso(id);
 				Vector<IstruttoreBean> istruttoriAux = dbms.getIstruttoriAuxCorso(id);
+				Vector<LezioneBean> lezioni = dbms.getLezioniCorso(id);
 				request.setAttribute("corso", corso);
 				request.setAttribute("iscritti", iscritti);
 				request.setAttribute("materiale", materiale);
 				request.setAttribute("istruttoriAux", istruttoriAux);
+				request.setAttribute("lezioni", lezioni);
 				rd = request.getRequestDispatcher("corso.jsp");
 			}
 
