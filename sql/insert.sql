@@ -123,3 +123,42 @@ VALUES ('2014-05-31', 'daniela.silvani@gmail.com', 1);
 
 INSERT INTO Iscrizione
 VALUES ('2014-06-29', 'matteo.storti@gmail.com', 3);
+
+INSERT INTO Lezione
+VALUES (1, 1, '10:30', '11:30');
+
+INSERT INTO Lezione
+VALUES (1, 5, '09:30', '10:30');
+
+INSERT INTO Lezione
+VALUES (2, 2, '17:15', '18:45');
+
+INSERT INTO Lezione
+VALUES (2, 4, '16:30', '18:00');
+
+INSERT INTO Lezione
+VALUES (3, 3, '14:30', '16:30');
+
+INSERT INTO Lezione
+VALUES (4, 1, '15:00', '16:30');
+
+INSERT INTO Lezione
+VALUES (4, 4, '15:00', '16:30');
+
+INSERT INTO Lezione
+VALUES (5, 1, '17:30', '19:00');
+
+INSERT INTO Lezione
+VALUES (5, 3, '16:30', '18:00');
+
+INSERT INTO Lezione
+VALUES (6, 1, '09:00', '10:30');
+
+INSERT INTO Lezione
+VALUES (7, 5, '10:30', '12:30');
+
+INSERT INTO Lezione
+VALUES (8, 2, '10:00', '12:00');
+
+INSERT INTO Lezione
+VALUES (9, 2, '15:30', '17:00');
