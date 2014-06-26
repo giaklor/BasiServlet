@@ -32,7 +32,7 @@ public class DBMS {
 	private static final String checkLogin = "SELECT username FROM Iscritto WHERE username = ? AND password = ?";
 	
 	/** Recupera i dati di un iscritto */
-	private static final String iscrittoq = "SELECT nome, cognome, email, to_char(data_nascita, 'DD/MM/YYYY') AS data_nascita, username, password " +
+	private static final String iscrittoq = "SELECT nome, cognome, email, to_char(data_nascita, 'DD/MM/YYYY') AS data_nascita " +
 			"FROM Iscritto WHERE username = ?";
 	
 	/** Recupera i corsi a cui &egrave iscritto uno studente */
@@ -61,7 +61,7 @@ public class DBMS {
 	
 	/** Recupera gli iscritti a un dato corso */
 	private static final String iscrittiCorsoq = "SELECT I.nome, I.cognome, to_char(I.data_nascita, 'DD/MM/YYYY') AS data_nascita, I.email, "
-			+ "I.password, to_char(IZ.data_iscrizione, 'DD/MM/YYYY') AS data_iscr FROM Iscritto I, Iscrizione IZ WHERE IZ.iscritto = I.email AND IZ.corso = ?";
+			+ "to_char(IZ.data_iscrizione, 'DD/MM/YYYY') AS data_iscr FROM Iscritto I, Iscrizione IZ WHERE IZ.iscritto = I.email AND IZ.corso = ?";
 
 	/** Recupera il materiale di un corso */
 	private static final String materialeCorsoq = "SELECT M.percorso, M.nome, M.tipo, M.formato "
@@ -103,7 +103,6 @@ public class DBMS {
 		bean.setCognome(rs.getString("cognome"));
 		bean.setDataNascita(rs.getString("data_nascita"));
 		bean.setEmail(rs.getString("email"));
-		bean.setPassword(rs.getString("password"));
 		return bean;
 	}
 	
