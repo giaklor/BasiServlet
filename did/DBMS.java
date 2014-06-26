@@ -280,6 +280,11 @@ public class DBMS {
 		return result;
 	}
 	
+	/**
+	 * Restituisce i dati dell'iscritto con lo username specificato.
+	 * @param username Il nome utente
+	 * @return Il bean con le informazioni, o <tt>null</tt> se l'iscritto non esiste.
+	 */
 	public IscrittoBean getIscritto(String username) {
 		
 		Connection con = null;
@@ -308,6 +313,11 @@ public class DBMS {
 		return result;
 	}
 	
+	/**
+	 * Restituisce i dati dei corsi a cui un cliente &egrave iscritto.
+	 * @param username Il nome utente
+	 * @return Il vettore dei corsi.
+	 */
 	public Vector<CorsoBean> getCorsiIscritto(String username) {
 		
 		Connection con = null;
@@ -336,6 +346,11 @@ public class DBMS {
 		return result;
 	}
 
+	/**
+	 * Restituisce le informazioni dei corsi di un tipo specificato.
+	 * @param tipo Il tipo di attivit&agrave
+	 * @return Il vettore dei corsi.
+	 */
 	public Vector<CorsoBean> getCorsiTipo(String tipo) {
 		
 		Connection con = null;
@@ -364,6 +379,11 @@ public class DBMS {
 		return result;
 	}
 	
+	/**
+	 * Restituisce i dati degli istruttori aggiuntivi di un corso.
+	 * @param idCorso L'id del corso
+	 * @return Il vettore degli istruttori.
+	 */
 	public Vector<IstruttoreBean> getIstruttoriAuxCorso(int idCorso) {
 		
 		Connection con = null;
@@ -393,6 +413,11 @@ public class DBMS {
 
 	}
 
+	/**
+	 * Restituisce i dati degli iscritti al corso specificato.
+	 * @param idCorso L'id del corso
+	 * @return Il vettore delle iscrizioni.
+	 */
 	public Vector<IscrizioneBean> getIscrittiCorso(int idCorso) {
 		
 		Connection con = null;
@@ -421,6 +446,11 @@ public class DBMS {
 		return result;
 	}
 	
+	/**
+	 * Restituisce i dati del materiale didattico del corso specificato.
+	 * @param idCorso L'id del corso
+	 * @return Il vettore con i dati di ogni elemento di materiale didattico.
+	 */
 	public Vector<MaterialeBean> getMaterialiCorso(int idCorso) {
 		
 		Connection con = null;
@@ -449,6 +479,11 @@ public class DBMS {
 		return result;
 	}
 	
+	/**
+	 * Restituisce i dati del corso specificato.
+	 * @param idCorso L'id del corso
+	 * @return Il bean con le informazioni sul corso, o <tt>null</tt> se il corso richiesto non esiste.
+	 */
 	public CorsoBean getCorso(int idCorso) {
 		
 		Connection con = null;
