@@ -124,6 +124,7 @@ VALUES ('2014-05-31', 'daniela.silvani@gmail.com', 1);
 INSERT INTO Iscrizione
 VALUES ('2014-06-29', 'matteo.storti@gmail.com', 3);
 
+
 INSERT INTO Lezione
 VALUES (1, 1, '10:30', '11:30');
 
@@ -162,3 +163,41 @@ VALUES (8, 2, '10:00', '12:00');
 
 INSERT INTO Lezione
 VALUES (9, 2, '15:30', '17:00');
+
+
+INSERT INTO Materiale_didattico
+VALUES ('guidaChestIncline.pdf', 'Guida Chest Incline', 'documento', 'pdf');
+
+INSERT INTO Materiale_didattico
+VALUES ('guidaLatMachine.pdf', 'Guida Lat Machine', 'documento', 'pdf');
+
+INSERT INTO Materiale_didattico
+VALUES ('mapFisio.jpg', 'Mappa sala fisioterapia', 'immagine', 'jpg');
+
+INSERT INTO Materiale_didattico
+VALUES ('nuoto.jpg', 'Vasca olimpionica 1', 'immagine', 'jpg');
+
+INSERT INTO Materiale_didattico
+VALUES ('wobbleBoard.jpg', 'Istruzioni Wobble Board', 'immagine', 'jpg');
+
+
+INSERT INTO Materiali_corso
+VALUES (2, 'mapFisio.jpg');
+
+INSERT INTO Materiali_corso
+VALUES (2, 'wobbleBoard.jpg');
+
+INSERT INTO Materiali_corso
+VALUES (6, 'guidaLatMachine.jpg');
+
+INSERT INTO Materiali_corso
+VALUES (6, 'guidaChestIncline.jpg');
+
+INSERT INTO Materiali_corso
+VALUES (3, 'nuoto.jpg');
+
+INSERT INTO Materiali_corso
+VALUES (4, 'nuoto.jpg');
+
+INSERT INTO Materiali_corso
+VALUES (5, 'nuoto.jpg');
