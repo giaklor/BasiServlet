@@ -188,10 +188,10 @@ INSERT INTO Materiali_corso
 VALUES (2, 'wobbleBoard.jpg');
 
 INSERT INTO Materiali_corso
-VALUES (6, 'guidaLatMachine.jpg');
+VALUES (6, 'guidaLatMachine.pdf');
 
 INSERT INTO Materiali_corso
-VALUES (6, 'guidaChestIncline.jpg');
+VALUES (6, 'guidaChestIncline.pdf');
 
 INSERT INTO Materiali_corso
 VALUES (3, 'nuoto.jpg');
